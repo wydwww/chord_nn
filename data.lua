@@ -21,7 +21,7 @@ else
    print('==> creating a new dataset from raw files:')
    
    t = {}
-   for f in paths.files("./segments1/data") do
+   for f in paths.files("/home/arda/yiding/segments1/data") do
       table.insert(t,f)
    end
    table.sort(t)
@@ -42,7 +42,7 @@ else
    end
    
    function readfile(file_name)
-      local f = assert(io.open("./segments1/data/"..file_name, "r"))
+      local f = assert(io.open("/home/arda/yiding/segments1/data/"..file_name, "r"))
       local t = f:read("*all")
       f:close()
       y = mysplit(t)
@@ -111,4 +111,3 @@ return {
    testData = testData,
 }
 
-   
