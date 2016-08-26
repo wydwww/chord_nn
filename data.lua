@@ -5,8 +5,6 @@ require 'paths'
 trSize = 9600
 teSize = 2393
 
-
-
 if paths.filep('train.t7') and paths.filep('test.t7') then
 
    print('==> loading previously generated dataset:')
@@ -24,10 +22,13 @@ else
    for f in paths.files("/home/arda/yiding/segments1/data") do
       table.insert(t,f)
    end
+   -- remove blank names
    table.sort(t)
    table.remove(t,1)
    table.remove(t,1)
-   table.sort(t, function(a, b) return a > b end)
+   --table.sort(t, function(a, b) return a > b end)
+   
+   -- split asc file
    function mysplit(inputstr, sep)
            if sep == nil then
                    sep = "%s"
@@ -41,6 +42,7 @@ else
            return t
    end
    
+   -- read data from file
    function readfile(file_name)
       local f = assert(io.open("/home/arda/yiding/segments1/data/"..file_name, "r"))
       local t = f:read("*all")
@@ -51,7 +53,7 @@ else
    end
    
    math.randomseed( os.time() )
-    
+   
    local function shuffleTable( t )
        local rand = math.random 
        assert( t, "shuffleTable() expected a table, got nil" )
@@ -66,7 +68,9 @@ else
    
    shuffleTable(t)
    shuffleTable(t)
+   shuffleTable(t)
 
+   -- build train and test datasets
    trainData = {
       data = torch.Tensor(trSize, 4000),
       labels = torch.Tensor(trSize),
@@ -78,9 +82,8 @@ else
       labels = torch.Tensor(teSize),
       size = function() return teSize end
    }
-
-   local trShuffle = torch.randperm(trSize)
    
+   -- load data and labels
    for i = 1, trSize do
       
       print('Loading train data '..i..'/9600 : '..t[i])
@@ -97,6 +100,7 @@ else
    
    end
    
+   -- save datasets to files
    torch.save('train.t7', trainData)
    torch.save('test.t7', testData)
 
@@ -105,7 +109,7 @@ end
 trainData.size = function() return trSize end
 testData.size = function() return teSize end
 
-
+-- export
 return {
    trainData = trainData,
    testData = testData,
