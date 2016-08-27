@@ -25,7 +25,7 @@ names = {'A4-1.wav', 'A4-2.wav', 'A4-3.wav', 'A4-4.wav', 'B3-1.wav', 'B3-2.wav',
 
 for file_name in names:
 
-# TODO(Yiding) Apply FFT to the signal.
+# Apply FFT to the signal.
 # fs, data = wavfile.read('A4-1.wav')
 # a = data.T[0]  # channel soundtrack 1
 # b = [(ele/2**16.)*2-1 for ele in a]  # this is 16-bit track, b is now normalized on [-1,1)
@@ -33,11 +33,11 @@ for file_name in names:
 # d = len(c)/2  # you only need half of the fft list (real signal symmetry)
 # plt.plot(abs(c[:(d-1)]),'r')
 
-# TODO(Yiding) Set xlabel in second.
+# Set xlabel in second.
 # k = np.arange(len(data))
 # frqLabel = k/fs
 
-# TODO(Yiding) Plot the signal in time domain.
+# Plot the signal in time domain.
 # plt.plot(frqLabel,abs(a),'b')
 # plt.show()
     
@@ -46,6 +46,6 @@ for file_name in names:
     music = AudioSegment.from_wav(file_name)
     chunks = split_on_silence(music,1000,-70)
 
-    # TODO(Yiding) Split the sample to 100 segments.
+    # Split the sample to 100 segments.
     for i, chunk in enumerate(chunks):
         chunk.export('segments/'+file_name[:-4]+'-{0}.wav'.format('%.2d' % i), format="wav")
