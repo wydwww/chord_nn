@@ -7,7 +7,7 @@ dofile 'data.lua'
 -- 30-classes classification problem
 classes = {'A4', 'B3', 'B4', 'C3', 'C3A4', 'C3B4', 'C3C4', 'C3D4', 'C3E4', 'C3F4', 'C3G4', 'C4', 'C4A4', 'C4AS4', 'C4B4', 'C4CS4', 'C4D4', 'C4DS4', 'C4E4', 'C4E4G4', 'C4F4', 'C4FS4', 'C4G4', 'C4GS4', 'C5', 'D4', 'D4E4F4', 'E4', 'F4', 'G4'}
 trSize = 9600
-teSize = 2393
+teSize = 2390 -- max:2393 integer multiple of batchSize
 
 -- Log results to files
 trainLogger = optim.Logger(paths.concat('train.log'))
@@ -54,14 +54,14 @@ function train()
 
    -- local vars
    local time = sys.clock()
-
-   shuffle = torch.randperm(9600)
+   
    -- do one epoch
    print('<trainer> on training set:')
    print("<trainer> online epoch # " .. epoch .. ' [batchSize = ' .. batchSize .. ']')
    print('[hiddenUnits = ' .. HUs .. ']')
    print('[learningRate = ' .. learningRate .. ']')
    
+   shuffle = torch.randperm(9600)
    for t = 1,trainData:size(),batchSize do
       -- create mini batch
       local inputs = torch.Tensor(batchSize,4000)
@@ -90,7 +90,6 @@ function train()
          -- evaluate function for complete mini batch
          local outputs = mlp:forward(inputs)
          f = criterion:forward(outputs, targets)
-         
          -- estimate df/dW
          local df_do = criterion:backward(outputs, targets)
          mlp:backward(inputs, df_do)
@@ -113,16 +112,15 @@ function train()
       
       loss = f
    end
-  
+   print(loss)  
    -- time taken
    time = sys.clock() - time
    time = time / trainData:size()
    print("<trainer> time to learn 1 sample = " .. (time*1000) .. 'ms')
-   -- print loss
    
    -- log train result
-   trainLogger:add{['epoch'] = epoch}
-   trainLogger:add{['% loss (train set)'] = loss}
+   trainLogger:add{['% epoch'] = epoch, ['% tloss'] = loss}
+   --trainLogger:add{['% tloss'] = loss}
    
    -- save/log current net
    --local filename = './model.net'
@@ -157,6 +155,9 @@ function test()
 
       -- test samples
       local preds = mlp:forward(inputs)
+      -- vloss: validation loss
+      local validationLoss = criterion:forward(preds, targets)
+      vloss = validationLoss
       local confidences, indices = torch.sort(preds, true)  -- true means sort in descending order
       for j = 1, targets:size(1) do
          if targets[j] == indices[j][1] then
@@ -172,8 +173,9 @@ function test()
    print('correct count: ' .. correct)
    print('accuracy: ' .. (correct/teSize*100) .. '%')
 
-   testLogger:add{['% correct count (test set)'] = correct}
-   testLogger:add{['% accuracy (test set)'] = correct/teSize*100}
+   --testLogger:add{['% vloss'] = vloss}
+   testLogger:add{['% vloss'] = vloss, ['% correct'] = correct, ['% accuracy'] = correct/teSize*100}
+--   testLogger:add{['% accuracy'] = correct/teSize*100}
 
 end
 
@@ -183,8 +185,8 @@ while true do
    test()
 
    -- print the log   
-   trainLogger:style{['% loss (train set)'] = '+-'}
-   testLogger:style{['% accuracy (test set)'] = '+-'}
+   trainLogger:style{['% tloss'] = '+-'}
+   testLogger:style{['% accuracy'] = '+-'}
    trainLogger:plot()
    testLogger:plot()
 
