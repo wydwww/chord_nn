@@ -94,7 +94,6 @@ function train()
          local df_do = criterion:backward(outputs, targets)
          mlp:backward(inputs, df_do)
 
---         print('loss: ' .. f)
          -- return f and df/dX
          return f,gradParameters
       end
@@ -120,7 +119,6 @@ function train()
    
    -- log train result
    trainLogger:add{['% epoch'] = epoch, ['% tloss'] = loss}
-   --trainLogger:add{['% tloss'] = loss}
    
    -- save/log current net
    --local filename = './model.net'
@@ -173,9 +171,7 @@ function test()
    print('correct count: ' .. correct)
    print('accuracy: ' .. (correct/teSize*100) .. '%')
 
-   --testLogger:add{['% vloss'] = vloss}
    testLogger:add{['% vloss'] = vloss, ['% correct'] = correct, ['% accuracy'] = correct/teSize*100}
---   testLogger:add{['% accuracy'] = correct/teSize*100}
 
 end
 
