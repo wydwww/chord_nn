@@ -111,14 +111,14 @@ function train()
       
       loss = f
    end
-   print(loss)  
    -- time taken
    time = sys.clock() - time
    time = time / trainData:size()
    print("<trainer> time to learn 1 sample = " .. (time*1000) .. 'ms')
-   
+   print('[train loss: ]' .. loss)
+ 
    -- log train result
-   trainLogger:add{['% epoch'] = epoch, ['% tloss'] = loss}
+   trainLogger:add{['% tloss'] = loss}
    
    -- save/log current net
    --local filename = './model.net'
@@ -176,15 +176,15 @@ function test()
 end
 
 -- start!
-while true do
+while not epoch or epoch<11 do
    train()
    test()
 
-   -- print the log   
-   trainLogger:style{['% tloss'] = '+-'}
-   testLogger:style{['% accuracy'] = '+-'}
-   trainLogger:plot()
-   testLogger:plot()
-
 end
+
+-- plot the log   
+trainLogger:style{['% tloss'] = '+-'}
+testLogger:style{['% accuracy'] = '+-', ['% vloss'] = '+-'}
+trainLogger:plot()
+testLogger:plot()
 
