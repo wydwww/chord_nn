@@ -4,6 +4,12 @@ require 'optim'
 
 dofile 'data.lua'
 
+-- parameter table for grid search
+param = {}
+param.learningRate = {0.01, 0.001}
+param.HUs = {2000, 2500, 3000, 3500, 4000, 4500, 5000}
+param.batchSize = {}
+
 -- 30-classes classification problem
 classes = {'A4', 'B3', 'B4', 'C3', 'C3A4', 'C3B4', 'C3C4', 'C3D4', 'C3E4', 'C3F4', 'C3G4', 'C4', 'C4A4', 'C4AS4', 'C4B4', 'C4CS4', 'C4D4', 'C4DS4', 'C4E4', 'C4E4G4', 'C4F4', 'C4FS4', 'C4G4', 'C4GS4', 'C5', 'D4', 'D4E4F4', 'E4', 'F4', 'G4'}
 trSize = 9600
@@ -13,11 +19,23 @@ teSize = 2390 -- max:2393 integer multiple of batchSize
 trainLogger = optim.Logger(paths.concat('train.log'))
 testLogger = optim.Logger(paths.concat('test.log'))
 
+-- grid search prototype
+for i,v in ipairs(param.learningRate) do 
+   lr = v
+   for i,v in ipairs(param.HUs) do
+      hu = v
+      --trainLogger = optim.Logger(paths.concat('train_'..'lr'..lr..'_HUs'..hu..'.log'))
+      --testLogger = optim.Logger(paths.concat('test_'..'lr'..lr..'_HUs'..hu..'.log'))
+      print(lr..', '..hu)
+   end
+end
+
 -- SGD
 torch.setdefaulttensortype('torch.FloatTensor')
 batchSize = 10
 learningRate = 0.01
-momentum = 0
+momentum = 0.5
+learningRateDecay = 5e-7
 
 -- creat a multi-layer perceptron
 mlp = nn.Sequential()
@@ -60,6 +78,7 @@ function train()
    print("<trainer> online epoch # " .. epoch .. ' [batchSize = ' .. batchSize .. ']')
    print('[hiddenUnits = ' .. HUs .. ']')
    print('[learningRate = ' .. learningRate .. ']')
+   print('[momentum = ' .. momentum .. ']') 
    
    shuffle = torch.randperm(9600)
    for t = 1,trainData:size(),batchSize do
@@ -102,7 +121,7 @@ function train()
       sgdState = sgdState or {
          learningRate = learningRate,
          momentum = momentum,
-         learningRateDecay = 5e-7,
+         learningRateDecay = learningRateDecay,
          weightDecay = 0
       }
       optim.sgd(feval, parameters, sgdState)
@@ -176,7 +195,7 @@ function test()
 end
 
 -- start!
-while not epoch or epoch<11 do
+while not epoch or epoch<16 do
    train()
    test()
 
