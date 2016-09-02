@@ -10,6 +10,7 @@ import com.intel.webscaleml.nn.tensor.{T, Table, Tensor, torch}
 import scala.collection.mutable.ArrayBuffer
 import scala.util.parsing.json.Parser
 import scala.io.Source
+import scala.util.Random
 
 object chord extends App {
 
@@ -28,6 +29,17 @@ object chord extends App {
   //
   //  }
 
+  def shuffle[T](data : ArrayBuffer[T]) = {
+    var i = 0
+    while(i < data.length) {
+      val exchange = i + Random.nextInt(data.length - i)
+      val tmp = data(exchange)
+      data(exchange) = data(i)
+      data(i) = tmp
+      i += 1
+    }
+  }
+
   def loadFile() = {
     val filesHere = new java.io.File("/Users/intel/Downloads/").list.filter(_.endsWith("txt"))
     val labelBuffer = new ArrayBuffer[Int]()
@@ -39,25 +51,47 @@ object chord extends App {
       for (line <- Source.fromFile("/Users/intel/Downloads/" + file).getLines()) {
         featureBuffer += line.toDouble
       }
-      //      println(featureBuffer(3))
-      //      featureBuffer.foreach(f=>println(f))
-      val trainData = new Array[Array[Double]](trSize)
-      var i = 0
-      while (i < trSize) {
-        val s = new Array[Double](trSize * 4000 + 1)
-        s(0) = labelBuffer(i)
-        var y = 0
-        while (y < trSize) {
-          var x = 0
-          while (x < 4000) {
-            s(1 + x + y * 4000) = featureBuffer(x + y * 4000)
-            x += 1
-          }
-          y += 1
+    }
+    //      println(featureBuffer(3))
+    //      featureBuffer.foreach(f=>println(f))
+
+    shuffle(labelBuffer)
+    shuffle(featureBuffer)
+
+    val trainData = new Array[Array[Double]](trSize)
+    var i = 0
+    while (i < trSize) {
+      val s = new Array[Double](trSize * 4000 + 1)
+      s(0) = labelBuffer(i)
+      var y = 0
+      while (y < trSize) {
+        var x = 0
+        while (x < 4000) {
+          s(1 + x + y * 4000) = featureBuffer(x + y * 4000)
+          x += 1
         }
-        trainData(i) = s
-        i += 1
+        y += 1
       }
+      trainData(i) = s
+      i += 1
+    }
+
+    val testData = new Array[Array[Double]](teSize)
+    var j = 0
+    while (j < teSize) {
+      val s = new Array[Double](teSize * 4000 + 1)
+      s(0) = labelBuffer(j + trSize)
+      var y = 0
+      while (y < teSize) {
+        var x = 0
+        while (x < 4000) {
+          s(1 + x + y * 4000) = featureBuffer(x + (y + trSize) * 4000)
+          x += 1
+        }
+        y += 1
+      }
+      testData(j) = s
+      j += 1
     }
   }
 }
