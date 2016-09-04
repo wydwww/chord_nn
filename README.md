@@ -8,3 +8,5 @@ Do fft and cut the frequency up to 4000Hz
 Load data and build datasets
 ## model.lua
 Build a neural network, then train and test
+## smodel.scala
+Model in scala
