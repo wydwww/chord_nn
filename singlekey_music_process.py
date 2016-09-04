@@ -33,7 +33,7 @@ for file_name in names:
     
     print 'No. %d Now processing ' % count + file_name
     count += 1
-    music = AudioSegment.from_wav(file_name)
+    music = AudioSegment.from_wav('../'+file_name)
     chunks = split_on_silence(music,1000,-70)
 
     # Split the sample to 100 segments.
