@@ -2,15 +2,15 @@ require 'torch'
 require 'nn'
 require 'paths'
 
-trSize = 9600
-teSize = 2393
+trSize = 6400
+teSize = 1590 --1598
 
-if paths.filep('train.t7') and paths.filep('test.t7') then
+if paths.filep('singletrain.t7') and paths.filep('singletest.t7') then
 
    print('==> loading previously generated dataset:')
 
-   trainData = torch.load('train.t7')
-   testData = torch.load('test.t7')
+   trainData = torch.load('singletrain.t7')
+   testData = torch.load('singletest.t7')
 
 else
 
@@ -19,7 +19,7 @@ else
    print('==> creating a new dataset from raw files:')
    
    t = {}
-   for f in paths.files("/home/arda/yiding/segments1/data") do
+   for f in paths.files("/home/arda/yiding/singleData") do
       table.insert(t,f)
    end
    -- remove blank names
@@ -44,7 +44,7 @@ else
    
    -- read data from file
    function readfile(file_name)
-      local f = assert(io.open("/home/arda/yiding/segments1/data/"..file_name, "r"))
+      local f = assert(io.open("/home/arda/yiding/singleData/"..file_name, "r"))
       local t = f:read("*all")
       f:close()
       y = mysplit(t)
@@ -86,7 +86,7 @@ else
    -- load data and labels
    for i = 1, trSize do
       
-      print('Loading train data '..i..'/9600 : '..t[i])
+      print('Loading train data '..i..'/6400 : '..t[i])
       trainData.data[i] = readfile(t[i])
       trainData.labels[i] = classes[string.match(t[i],"%u?%d?%u?%u?%d?%u?%d?")]
    
@@ -101,8 +101,8 @@ else
    end
    
    -- save datasets to files
-   torch.save('train.t7', trainData)
-   torch.save('test.t7', testData)
+   torch.save('singletrain.t7', trainData)
+   torch.save('singletest.t7', testData)
 
 end
 
