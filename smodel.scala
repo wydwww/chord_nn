@@ -94,4 +94,21 @@ object chord extends App {
       j += 1
     }
   }
+
+  def getModule() : Module[Double] = {
+
+    val inputs = 4000
+    val outputs = 30
+    val HUs = 2000
+    val mlp = new Sequential[Double]
+
+    mlp.add(new Reshape(Array(inputs)))
+    mlp.add(new Linear(inputs, HUs))
+    mlp.add(new Tanh)
+    mlp.add(new Linear(HUs, outputs))
+    mlp.add(new LogSoftMax)
+    mlp
+
+  }
+
 }
