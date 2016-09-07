@@ -1,6 +1,7 @@
 import os
 
 f_list = os.listdir('../singleData')
+print "nan files:"
 for i in f_list:
     if os.path.splitext(i)[1] == '.asc':
         f = open('../singleData/'+i, 'r')
