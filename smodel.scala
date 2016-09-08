@@ -16,6 +16,10 @@ object chord extends App {
 
   val trSize = 9600
   val teSize = 2393
+  val inputSize = 4000
+  val outputs = 30
+  val HUs = 2000
+
   val classes = Map(("A4", 1), ("B3", 2), ("B4", 3), ("C3", 4), ("C3A4", 5), ("C3B4", 6), ("C3C4", 7), ("C3D4", 8),
     ("C3E4", 9), ("C3F4", 10), ("C3G4", 11), ("C4", 12), ("C4A4", 13), ("C4AS4", 14), ("C4B4", 15), ("C4CS4", 16),
     ("C4D4", 17), ("C4DS4", 18), ("C4E4", 19), ("C4E4G4", 20), ("C4F4", 21), ("C4FS4", 22), ("C4G4", 23),
@@ -25,9 +29,7 @@ object chord extends App {
   //  def toTensor(input : Tensor[Double], target : Tensor[Double]) : (Tensor[Double]) = {
   //
   //  }
-  //  def toTensor(inputs : Seq[Array[Byte]], input : Tensor[Double], target : Tensor[Double]) : (Tensor[Double]) = {
-  //
-  //  }
+
 
   def shuffle[T](data : ArrayBuffer[T]) = {
     var i = 0
@@ -97,13 +99,10 @@ object chord extends App {
 
   def getModule() : Module[Double] = {
 
-    val inputs = 4000
-    val outputs = 30
-    val HUs = 2000
     val mlp = new Sequential[Double]
 
-    mlp.add(new Reshape(Array(inputs)))
-    mlp.add(new Linear(inputs, HUs))
+    mlp.add(new Reshape(Array(inputSize)))
+    mlp.add(new Linear(inputSize, HUs))
     mlp.add(new Tanh)
     mlp.add(new Linear(HUs, outputs))
     mlp.add(new LogSoftMax)
@@ -111,4 +110,22 @@ object chord extends App {
 
   }
 
+  def toTensor(inputs : Seq[Array[Byte]], input : Tensor[Double], target : Tensor[Double]) : (Tensor[Double]) = {
+    val size = inputs.size
+    input.resize(Array(size, inputSize))
+    target.resize(Array(size))
+    var i = 0
+    while(i < size) {
+      val img = inputs(i)
+      input.setValue(inputs(i))
+      var j = 0
+      while(j < inputSize) {
+        input.setValue(i + 1, j / rowN + 1, j % rowN + 1, ((img(j + 1) & 0xff) / 255.0 - mean) / std)
+        j += 1
+      }
+      target.setValue(i + 1, (img(0) & 0xff) + 1.0)
+      i += 1
+    }
+    (input, target)
+  }
 }
