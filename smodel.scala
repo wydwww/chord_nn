@@ -24,11 +24,8 @@ object chord extends App {
     ("C3E4", 9), ("C3F4", 10), ("C3G4", 11), ("C4", 12), ("C4A4", 13), ("C4AS4", 14), ("C4B4", 15), ("C4CS4", 16),
     ("C4D4", 17), ("C4DS4", 18), ("C4E4", 19), ("C4E4G4", 20), ("C4F4", 21), ("C4FS4", 22), ("C4G4", 23),
     ("C4GS4", 24), ("C5", 25), ("D4", 26), ("D4E4F4", 27), ("E4", 28), ("F4", 29), ("G4", 30))
+  
   loadFile()
-
-  //  def toTensor(input : Tensor[Double], target : Tensor[Double]) : (Tensor[Double]) = {
-  //
-  //  }
 
 
   def shuffle[T](data : ArrayBuffer[T]) = {
