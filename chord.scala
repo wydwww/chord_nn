@@ -27,18 +27,9 @@ object chord extends App {
 
   loadFile()
 
-  def shuffle[T](data : ArrayBuffer[T]) = {
-    var i = 0
-    while(i < data.length) {
-      val exchange = i + Random.nextInt(data.length - i)
-      val tmp = data(exchange)
-      data(exchange) = data(i)
-      data(i) = tmp
-      i += 1
-    }
-  }
 
-  def loadFile() = {
+
+  def loadFile():(Array[Array[Double]], Array[Array[Double]]) = {
     val filesHere = new java.io.File("/Users/intel/Downloads/").list.filter(_.endsWith("txt"))
     val labelBuffer = new ArrayBuffer[Int]()
     var featureBuffer = new ArrayBuffer[Double]()
@@ -50,8 +41,8 @@ object chord extends App {
         featureBuffer += line.toDouble
       }
     }
-    //      println(featureBuffer(3))
-    //      featureBuffer.foreach(f=>println(f))
+//      println(featureBuffer(3))
+//      featureBuffer.foreach(f=>println(f))
 
     shuffle(labelBuffer)
     shuffle(featureBuffer)
@@ -91,6 +82,7 @@ object chord extends App {
       testData(j) = s
       j += 1
     }
+    return (trainData, testData)
   }
 
   def getModule() : Module[Double] = {
@@ -104,9 +96,9 @@ object chord extends App {
     mlp.add(new LogSoftMax)
     mlp
 
-  }
+    }
 
-  def toTensor(inputs : Seq[Array[Byte]], input : Tensor[Double], target : Tensor[Double]) : (Tensor[Double], Tensor[Double]) = {
+  def toTensor(inputs : Seq[Array[Double]], input : Tensor[Double], target : Tensor[Double]) : (Tensor[Double], Tensor[Double]) = {
     val size = inputs.size
     input.resize(Array(size, inputSize))
     target.resize(Array(size))
