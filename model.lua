@@ -75,7 +75,7 @@ function train()
    
    -- do one epoch
    print('<trainer> on training set:')
-   print("<trainer> online epoch # " .. epoch .. ' [batchSize = ' .. batchSize .. ']')
+   print('<trainer> online epoch # ' .. epoch .. ' [batchSize = ' .. batchSize .. ']')
    print('[hiddenUnits = ' .. HUs .. ']')
    print('[learningRate = ' .. learningRate .. ']')
    print('[momentum = ' .. momentum .. ']') 

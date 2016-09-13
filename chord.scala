@@ -16,20 +16,18 @@ object chord extends App {
 
   val trSize = 9600
   val teSize = 2393
+  val inputSize = 4000
+  val outputs = 30
+  val HUs = 2000
+
   val classes = Map(("A4", 1), ("B3", 2), ("B4", 3), ("C3", 4), ("C3A4", 5), ("C3B4", 6), ("C3C4", 7), ("C3D4", 8),
     ("C3E4", 9), ("C3F4", 10), ("C3G4", 11), ("C4", 12), ("C4A4", 13), ("C4AS4", 14), ("C4B4", 15), ("C4CS4", 16),
     ("C4D4", 17), ("C4DS4", 18), ("C4E4", 19), ("C4E4G4", 20), ("C4F4", 21), ("C4FS4", 22), ("C4G4", 23),
     ("C4GS4", 24), ("C5", 25), ("D4", 26), ("D4E4F4", 27), ("E4", 28), ("F4", 29), ("G4", 30))
-  loadFile()
 
-  //  def toTensor(input : Tensor[Double], target : Tensor[Double]) : (Tensor[Double]) = {
-  //
-  //  }
-  //  def toTensor(inputs : Seq[Array[Byte]], input : Tensor[Double], target : Tensor[Double]) : (Tensor[Double]) = {
-  //
-  //  }
+//  loadFile()
 
-  def shuffle[T](data : ArrayBuffer[T]) = {
+  def shuffleBuffer[T](data : ArrayBuffer[T]) = {
     var i = 0
     while(i < data.length) {
       val exchange = i + Random.nextInt(data.length - i)
@@ -40,23 +38,23 @@ object chord extends App {
     }
   }
 
-  def loadFile() = {
-    val filesHere = new java.io.File("/Users/intel/Downloads/").list.filter(_.endsWith("txt"))
+  def loadFile():(Array[Array[Double]], Array[Array[Double]]) = {
+    val filesHere = new java.io.File("/Users/intel/WebScaleML/algorithms/src/main/scala/com/intel/webscaleml/nn/example/yiding/").list.filter(_.endsWith("txt"))
     val labelBuffer = new ArrayBuffer[Int]()
     var featureBuffer = new ArrayBuffer[Double]()
     val pattern = "[A-Z]?[0-9]?[A-Z]?[A-Z]?[0-9]?[A-Z]?[0-9]?".r
     for (file <- filesHere) {
       labelBuffer += classes(pattern.findFirstIn(file).get)
       //      labelBuffer.foreach(f=>println(f))
-      for (line <- Source.fromFile("/Users/intel/Downloads/" + file).getLines()) {
+      for (line <- Source.fromFile("/Users/intel/WebScaleML/algorithms/src/main/scala/com/intel/webscaleml/nn/example/yiding/" + file).getLines()) {
         featureBuffer += line.toDouble
       }
     }
-    //      println(featureBuffer(3))
-    //      featureBuffer.foreach(f=>println(f))
+//      println(featureBuffer(3))
+//      featureBuffer.foreach(f=>println(f))
 
-    shuffle(labelBuffer)
-    shuffle(featureBuffer)
+    shuffleBuffer(labelBuffer)
+    shuffleBuffer(featureBuffer)
 
     val trainData = new Array[Array[Double]](trSize)
     var i = 0
@@ -93,5 +91,37 @@ object chord extends App {
       testData(j) = s
       j += 1
     }
+    return (trainData, testData)
+  }
+
+  def getModule() : Module[Double] = {
+
+    val mlp = new Sequential[Double]
+
+    mlp.add(new Reshape(Array(inputSize)))
+    mlp.add(new Linear(inputSize, HUs))
+    mlp.add(new Tanh)
+    mlp.add(new Linear(HUs, outputs))
+    mlp.add(new LogSoftMax)
+    mlp
+
+    }
+
+  def toTensor(inputs : Seq[Array[Double]], input : Tensor[Double], target : Tensor[Double]) : (Tensor[Double], Tensor[Double]) = {
+    val size = inputs.size
+    input.resize(Array(size, inputSize))
+    target.resize(Array(size))
+    var i = 0
+    while(i < size) {
+      val img = inputs(i)
+      var j = 0
+      while(j < inputSize) {
+        input.setValue(i + 1, j / inputSize + 1, img(j + 1))
+        j += 1
+      }
+      target.setValue(i + 1, img(0))
+      i += 1
+    }
+    (input, target)
   }
 }
