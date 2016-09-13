@@ -112,6 +112,6 @@ testData.size = function() return teSize end
 -- export
 return {
    trainData = trainData,
-   testData = testData,
+   testData = testData
 }
 
