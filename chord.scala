@@ -25,27 +25,36 @@ object chord extends App {
     ("C4D4", 17), ("C4DS4", 18), ("C4E4", 19), ("C4E4G4", 20), ("C4F4", 21), ("C4FS4", 22), ("C4G4", 23),
     ("C4GS4", 24), ("C5", 25), ("D4", 26), ("D4E4F4", 27), ("E4", 28), ("F4", 29), ("G4", 30))
 
-  loadFile()
+//  loadFile()
 
-
+  def shuffleBuffer[T](data : ArrayBuffer[T]) = {
+    var i = 0
+    while(i < data.length) {
+      val exchange = i + Random.nextInt(data.length - i)
+      val tmp = data(exchange)
+      data(exchange) = data(i)
+      data(i) = tmp
+      i += 1
+    }
+  }
 
   def loadFile():(Array[Array[Double]], Array[Array[Double]]) = {
-    val filesHere = new java.io.File("/Users/intel/Downloads/").list.filter(_.endsWith("txt"))
+    val filesHere = new java.io.File("/Users/intel/WebScaleML/algorithms/src/main/scala/com/intel/webscaleml/nn/example/yiding/").list.filter(_.endsWith("txt"))
     val labelBuffer = new ArrayBuffer[Int]()
     var featureBuffer = new ArrayBuffer[Double]()
     val pattern = "[A-Z]?[0-9]?[A-Z]?[A-Z]?[0-9]?[A-Z]?[0-9]?".r
     for (file <- filesHere) {
       labelBuffer += classes(pattern.findFirstIn(file).get)
       //      labelBuffer.foreach(f=>println(f))
-      for (line <- Source.fromFile("/Users/intel/Downloads/" + file).getLines()) {
+      for (line <- Source.fromFile("/Users/intel/WebScaleML/algorithms/src/main/scala/com/intel/webscaleml/nn/example/yiding/" + file).getLines()) {
         featureBuffer += line.toDouble
       }
     }
 //      println(featureBuffer(3))
 //      featureBuffer.foreach(f=>println(f))
 
-    shuffle(labelBuffer)
-    shuffle(featureBuffer)
+    shuffleBuffer(labelBuffer)
+    shuffleBuffer(featureBuffer)
 
     val trainData = new Array[Array[Double]](trSize)
     var i = 0
