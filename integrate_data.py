@@ -1,18 +1,19 @@
 from os import listdir
 from os.path import isfile, join
-import re
+import random
 
-mypath = './data/'
+mypath = './singledata/'
 allfiles = [f for f in listdir(mypath) if isfile(join(mypath,f)) and f.endswith('asc')]
+random.shuffle(allfiles)
+random.shuffle(allfiles)
 
-count = 1
-f = open('./alldata.asc', 'w')
+f = open('./data.asc', 'w')
 
 for file_name in allfiles:
     # print file_name.split('-')[0]
     label = file_name.split('-')[0]
     f.write(label + ' ')
-    ff = open('./data/' + file_name, 'r')
+    ff = open(mypath + file_name, 'r')
     for line in ff.read().split('\n'):
         f.write(line + ' ')
     # f.write(ff.read().split(''))
