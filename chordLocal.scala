@@ -44,7 +44,8 @@ object chordLocal {
   def train(params : Utils.Params) = {
     val folder = params.folder
     val (trainData, testData) = loadFile()
-
+    println("train data length = " + trainData.length)
+    println("test data length = " + testData.length)
     val module = getModule()
     val optm = getOptimMethod(params.masterOptM)
     val critrion = new ClassNLLCriterion[Double]()
@@ -52,19 +53,24 @@ object chordLocal {
     var e = 0
     val config = params.masterConfig.clone()
     config("dampening") = 0.0
+//    config("learningRate") = 0.01
+//    config("learningRateDecay") = 5e-7
     var wallClockTime = 0L
 //    val (mean, std) = computeMeanStd(trainData)
 //    println(s"mean is $mean std is $std")
     val input = torch.Tensor[Double]()
     val target = torch.Tensor[Double]()
-    while(e < config.get[Int]("epoch").get) {
-      shuffle(trainData)
+    println("start!")
+    while(e < 20) {
+//      while(e < config.get[Int]("epoch").get) {
+//      println("epoch: " + e)
+//      shuffle(trainData)
       var trainLoss = 0.0
       var i = 0
       var c = 0
       while(i < trainData.length) {
         val start = System.nanoTime()
-        val batch = math.min(params.workerConfig[Int]("batch"), trainData.length - i)
+        val batch = math.min(10, trainData.length - i)
         val buffer = new Array[Array[Double]](batch)
         var j = 0
         while(j < buffer.length) {
@@ -105,6 +111,8 @@ object chordLocal {
         count += curCount
         k += 1
       }
+      println(correct)
+      println(count)
       println(s"[Wall Clock ${wallClockTime.toDouble / 1e9}s] Test Loss is ${testLoss / k} Accuracy is ${correct.toDouble / count}")
 
       e += 1
