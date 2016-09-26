@@ -4,15 +4,15 @@ from scipy.io import wavfile
 from pydub import AudioSegment
 from pydub.silence import split_on_silence
 import os
+from os import listdir
+from os.path import isfile, join
 import numpy as np
 count = 1
-names = {'A4-1.wav', 'A4-2.wav', 'A4-3.wav', 'A4-4.wav', 'B3-1.wav', 'B3-2.wav', 'B3-3.wav',
-         'B3-4.wav', 'B4-1.wav', 'B4-2.wav', 'B4-3.wav', 'B4-4.wav', 'C3-1.wav', 'C3-2.wav', 'C3-3.wav', 'C3-4.wav',
-         'C4-1.wav', 'C4-2.wav', 'C4-3.wav', 'C4-4.wav',
-         'C5-1.wav', 'C5-2.wav',
-         'C5-3.wav', 'C5-4.wav', 'D4-1.wav', 'D4-2.wav', 'D4-3.wav', 'D4-4.wav', 'E4-1.wav', 'E4-2.wav', 'E4-3.wav', 'E4-4.wav', 'F4-1.wav', 'F4-2.wav',
-         'F4-3.wav', 'F4-4.wav', 'G4-1.wav', 'G4-2.wav', 'G4-3.wav', 'G4-4.wav'}
+mypath = '/Users/intel/music_real/'
+names = [f for f in listdir(mypath) if isfile(join(mypath,f)) and f.endswith('wav')]
 
+
+outputpath = '/Users/intel/real_output/'
 for file_name in names:
 
 # Apply FFT to the signal.
@@ -33,9 +33,9 @@ for file_name in names:
     
     print 'No. %d Now processing ' % count + file_name
     count += 1
-    music = AudioSegment.from_wav('../'+file_name)
-    chunks = split_on_silence(music,1000,-70)
+    music = AudioSegment.from_wav(mypath+file_name)
+    chunks = split_on_silence(music,100,-20)
 
     # Split the sample to 100 segments.
     for i, chunk in enumerate(chunks):
-        chunk.export('singleKeys/'+file_name[:-4]+'-{0}.wav'.format('%.2d' % i), format="wav")
+        chunk.export(outputpath + file_name[:-4]+'-{0}.wav'.format('%.2d' % i), format="wav")

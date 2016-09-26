@@ -2,7 +2,7 @@ from os import listdir
 from os.path import isfile, join
 import random
 
-mypath = './singledata/'
+mypath = '/Users/intel/real_asc/'
 allfiles = [f for f in listdir(mypath) if isfile(join(mypath,f)) and f.endswith('asc')]
 random.shuffle(allfiles)
 random.shuffle(allfiles)

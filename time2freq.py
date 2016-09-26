@@ -1,16 +1,16 @@
 from scipy.io import wavfile
-import lutorpy
+# import lutorpy
 import numpy as np
 from os import listdir
 from os.path import isfile, join
 
-mypath = '/home/arda/yiding/segments1'
-allfiles = [ f for f in listdir(mypath) if isfile(join(mypath,f)) ]
-
+mypath = '/Users/intel/real_output/'
+allfiles = [f for f in listdir(mypath) if isfile(join(mypath,f)) and f.endswith('wav')]
+outputpath = '/Users/intel/real_asc/'
 count = 1
 
 for file_name in allfiles:
-    fs, data = wavfile.read(file_name)
+    fs, data = wavfile.read(mypath + file_name)
     a = data.T[0]
     p = np.fft.fft(a, fs)
     n = len(p)
@@ -19,7 +19,7 @@ for file_name in allfiles:
     p = p/max(p)
     p = p[:4000]
     
-    x = torch.fromNumpyArray(p)
-    np.savetxt('data/' + file_name[:-4] + '.asc', x)
+    # x = torch.fromNumpyArray(p)
+    np.savetxt(outputpath + file_name[:-4] + '.asc', p)
     print '%d/12000' % count
     count=count+1
