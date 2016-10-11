@@ -6,23 +6,8 @@ from pydub.silence import split_on_silence
 import os
 import numpy as np
 count = 1
-names = {'A4-1.wav', 'A4-2.wav', 'A4-3.wav', 'A4-4.wav', 'B3-1.wav', 'B3-2.wav', 'B3-3.wav',
-         'B3-4.wav', 'B4-1.wav', 'B4-2.wav', 'B4-3.wav', 'B4-4.wav', 'C3-1.wav', 'C3-2.wav', 'C3-3.wav', 'C3-4.wav',
-         'C3A4-1.wav', 'C3A4-2.wav', 'C3A4-3.wav', 'C3A4-4.wav', 'C3B4-1.wav', 'C3B4-2.wav', 'C3B4-3.wav', 'C3B4-4.wav',
-         'C3C4-1.wav', 'C3C4-2.wav', 'C3C4-3.wav', 'C3C4-4.wav', 'C3D4-1.wav', 'C3D4-2.wav', 'C3D4-3.wav', 'C3D4-4.wav',
-         'C3E4-1.wav', 'C3E4-2.wav', 'C3E4-3.wav', 'C3E4-4.wav', 'C3F4-1.wav', 'C3F4-2.wav', 'C3F4-3.wav', 'C3F4-4.wav',
-         'C3G4-1.wav', 'C3G4-2.wav', 'C3G4-3.wav', 'C3G4-4.wav', 'C4-1.wav', 'C4-2.wav', 'C4-3.wav', 'C4-4.wav',
-         'C4A#4-1.wav', 'C4A#4-2.wav', 'C4A#4-3.wav', 'C4A#4-4.wav', 'C4A4-1.wav', 'C4A4-2.wav', 'C4A4-3.wav',
-         'C4A4-4.wav', 'C4B4-1.wav', 'C4B4-2.wav', 'C4B4-3.wav', 'C4B4-4.wav', 'C4C#4-1.wav', 'C4C#4-2.wav',
-         'C4C#4-3.wav', 'C4C#4-4.wav', 'C4D#4-1.wav', 'C4D#4-2.wav', 'C4D#4-3.wav', 'C4D#4-4.wav', 'C4D4-1.wav',
-         'C4D4-2.wav', 'C4D4-3.wav', 'C4D4-4.wav', 'C4E4-1.wav', 'C4E4-2.wav', 'C4E4-3.wav', 'C4E4-4.wav',
-         'C4E4G4-1.wav', 'C4E4G4-2.wav', 'C4E4G4-3.wav', 'C4E4G4-4.wav', 'C4F#4-1.wav', 'C4F#4-2.wav', 'C4F#4-3.wav',
-         'C4F#4-4.wav', 'C4F4-1.wav', 'C4F4-2.wav', 'C4F4-3.wav', 'C4F4-4.wav', 'C4G#4-1.wav', 'C4G#4-2.wav',
-         'C4G#4-3.wav', 'C4G#4-4.wav', 'C4G4-1.wav', 'C4G4-2.wav', 'C4G4-3.wav', 'C4G4-4.wav', 'C5-1.wav', 'C5-2.wav',
-         'C5-3.wav', 'C5-4.wav', 'D4-1.wav', 'D4-2.wav', 'D4-3.wav', 'D4-4.wav', 'D4E4F4-1.wav', 'D4E4F4-2.wav',
-         'D4E4F4-3.wav', 'D4E4F4-4.wav', 'E4-1.wav', 'E4-2.wav', 'E4-3.wav', 'E4-4.wav', 'F4-1.wav', 'F4-2.wav',
-         'F4-3.wav', 'F4-4.wav', 'G4-1.wav', 'G4-2.wav', 'G4-3.wav', 'G4-4.wav'}
-
+names = {'D4-new.m4a'}
+# names = [f for f in listdir(mypath) if isfile(join(mypath,f)) and f.endswith('wav')]
 for file_name in names:
 
 # Apply FFT to the signal.
@@ -43,9 +28,9 @@ for file_name in names:
     
     print 'No. %d Now processing ' % count + file_name
     count += 1
-    music = AudioSegment.from_wav(file_name)
-    chunks = split_on_silence(music,1000,-70)
+    music = AudioSegment.from_file('/Users/intel/music_real/'+file_name)
+    chunks = split_on_silence(music,10,-20) # (filename, least silence, silence threshold)
 
     # Split the sample to 100 segments.
     for i, chunk in enumerate(chunks):
-        chunk.export('segments/'+file_name[:-4]+'-{0}.wav'.format('%.2d' % i), format="wav")
+        chunk.export('/Users/intel/real_output/'+file_name[:-4]+'-{0}.wav'.format('%.2d' % i), format="wav")
