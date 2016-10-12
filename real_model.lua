@@ -13,8 +13,8 @@ param.batchSize = {}
 -- 30-classes classification problem
 -- classes = {C3 = 1, C3C4 = 2, C4 = 3, C4E4 = 4, D4 = 5, D4A4 = 6, D4E4 = 7, D4F4 = 8, D4FS4 = 9, D4G4 = 10, DFS4 = 11}
 classes = {'1','2','3','4','5','6','7','8','9','10','11'}
-trSize = 1360
-teSize = 340 -- max:2393 integer multiple of batchSize
+trSize = 1540
+teSize = 390 -- max:2393 integer multiple of batchSize
 
 confusion = optim.ConfusionMatrix(classes)
 
@@ -217,7 +217,7 @@ function test()
 end
 
 -- start!
-while not epoch or epoch<16 do
+while not epoch or epoch<100 do
    train()
    test()
 

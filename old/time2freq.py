@@ -4,7 +4,7 @@ import numpy as np
 from os import listdir
 from os.path import isfile, join
 
-mypath = '/Users/intel/real_output/'
+mypath = '/Users/intel/real_output/D4E4-new/D4E4/'
 allfiles = [f for f in listdir(mypath) if isfile(join(mypath,f)) and f.endswith('wav')]
 outputpath = '/Users/intel/real_asc/'
 count = 1

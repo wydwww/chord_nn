@@ -2,8 +2,8 @@ require 'torch'
 require 'nn'
 require 'paths'
 
-trSize = 1360
-teSize = 340
+trSize = 1540
+teSize = 390
 
 if paths.filep('train.t7') and paths.filep('test.t7') then
 

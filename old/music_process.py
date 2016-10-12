@@ -6,7 +6,7 @@ from pydub.silence import split_on_silence
 import os
 import numpy as np
 count = 1
-names = {'D4-new.m4a'}
+names = {'D4E4-new.m4a'}
 # names = [f for f in listdir(mypath) if isfile(join(mypath,f)) and f.endswith('wav')]
 for file_name in names:
 
@@ -33,4 +33,4 @@ for file_name in names:
 
     # Split the sample to 100 segments.
     for i, chunk in enumerate(chunks):
-        chunk.export('/Users/intel/real_output/'+file_name[:-4]+'-{0}.wav'.format('%.2d' % i), format="wav")
+        chunk.export('/Users/intel/real_output/D4E4-new/'+file_name[:-4]+'-{0}.wav'.format('%.2d' % i), format="wav")
