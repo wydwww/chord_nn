@@ -3,7 +3,7 @@ local nn = require 'nn'
 local model = {}
 
 function model:createAutoencoder(X)
-  local featureSize = X:size(2) * X:size(3)
+  local featureSize = 4000
 
   -- Create encoder
   self.encoder = nn.Sequential()
@@ -15,7 +15,7 @@ function model:createAutoencoder(X)
   self.decoder = nn.Sequential()
   self.decoder:add(nn.Linear(32, featureSize))
   self.decoder:add(nn.Sigmoid(true))
-  self.decoder:add(nn.View(X:size(2), X:size(3)))
+  self.decoder:add(nn.View(featureSize))
 
   -- Create autoencoder
   self.autoencoder = nn.Sequential()

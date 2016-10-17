@@ -7,27 +7,29 @@ dofile 'real_data.lua'
 print('Setting up')
 torch.setdefaulttensortype('torch.FloatTensor')
 torch.manualSeed(1)
-
+local XTrain = trainData.data
+local XTest = testData.data
+-- print(trainData.labels)
+-- print(trainData.size)
 classes = {'1','2','3','4','5','6','7','8','9','10','11'}
 trSize = 1540
 teSize = 390
 
 -- load train and test data
-setmetatable(trainData, 
-    {__index = function(t, i) 
-                    return {t.data[i], t.labels[i]} 
-                end}
-)
+-- setmetatable(trainData, 
+--     {__index = function(t, i) 
+--                     return {t.data[i], t.labels[i]} 
+--                 end}
+-- )
 
-setmetatable(testData,
-    {__index = function(t, i)
-                    return {t.data[i], t.labels[i]}
-                end}
-)
+-- setmetatable(testData,
+--     {__index = function(t, i)
+--                     return {t.data[i], t.labels[i]}
+--                 end}
+-- )
 
 
 -- Choose model to train
-local cmd = torch.CmdLine()
 local optimiser = 'adam'
 local epochs = 10
 local learningRate = 0.001
@@ -81,7 +83,7 @@ local losses, advLosses = {}, {}
 
 for epoch = 1, epochs do
   print('Epoch ' .. epoch .. '/' .. epochs)
-  for n = 1, N, batchSize do
+  for n = 1, trSize, batchSize do
     -- Get minibatch
     x = XTrain:narrow(1, n, batchSize)
 
