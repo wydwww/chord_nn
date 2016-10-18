@@ -7,11 +7,10 @@ dofile 'real_data.lua'
 print('Setting up')
 torch.setdefaulttensortype('torch.FloatTensor')
 torch.manualSeed(1)
-local XTrain = trainData.data
-local XTest = testData.data
+local XTrain = trainData.data:float():div(255)
+local XTest = testData.data:float():div(255)
 -- print(trainData.labels)
 -- print(trainData.size)
-classes = {'1','2','3','4','5','6','7','8','9','10','11'}
 trSize = 1540
 teSize = 390
 
@@ -30,13 +29,14 @@ teSize = 390
 
 
 -- Choose model to train
-local optimiser = 'adam'
+local optimiser = 'sgd'
 local epochs = 10
 local learningRate = 0.001
 local batchSize = 10
-local model = require 'ae'
-model:createAutoencoder(XTrain)
-local autoencoder = model.autoencoder
+-- local model = require 'ae'
+-- model:createAutoencoder(XTrain)
+-- print(model[0])
+local autoencoder = require 'ae'
 
 -- Get parameters
 local theta, gradTheta = autoencoder:getParameters()

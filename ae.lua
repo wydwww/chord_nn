@@ -1,26 +1,37 @@
 local nn = require 'nn'
 
-local model = {}
 
-function model:createAutoencoder(X)
-  local featureSize = 4000
 
-  -- Create encoder
-  self.encoder = nn.Sequential()
-  self.encoder:add(nn.View(-1, featureSize))
-  self.encoder:add(nn.Linear(featureSize, 32))
-  self.encoder:add(nn.ReLU(true))
+-- params
+inputSize = 4000
+outputSize = 11
+featureSize = 4000
+-- encoder
+-- encoder = nn.Sequential()
+-- encoder:add(nn.Linear(inputSize,outputSize))
+-- encoder:add(nn.Tanh())
+-- encoder:add(nn.Diag(outputSize))
 
-  -- Create decoder
-  self.decoder = nn.Sequential()
-  self.decoder:add(nn.Linear(32, featureSize))
-  self.decoder:add(nn.Sigmoid(true))
-  self.decoder:add(nn.View(featureSize))
+-- decoder
+decoder = nn.Sequential()
+decoder:add(nn.Linear(outputSize,inputSize))
 
-  -- Create autoencoder
-  self.autoencoder = nn.Sequential()
-  self.autoencoder:add(self.encoder)
-  self.autoencoder:add(self.decoder)
-end
+-- -- Create encoder
+encoder = nn.Sequential()
+encoder:add(nn.View(-1, featureSize))
+encoder:add(nn.Linear(featureSize, 32))
+encoder:add(nn.ReLU(true))
 
-return model
+-- -- Create decoder
+-- self.decoder = nn.Sequential()
+-- self.decoder:add(nn.Linear(32, featureSize))
+-- self.decoder:add(nn.Sigmoid(true))
+-- self.decoder:add(nn.View(featureSize))
+
+-- Create autoencoder
+autoencoder = nn.Sequential()
+autoencoder:add(encoder)
+autoencoder:add(decoder)
+
+
+return autoencoder
