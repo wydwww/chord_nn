@@ -91,11 +91,6 @@ for epoch = 1, epochs do
     __, loss = optim[optimiser](feval, theta, optimParams)
     losses[#losses + 1] = loss[1]
 
-    -- Train adversary
-    if opt.model == 'AAE' then
-      __, loss = optim[optimiser](advFeval, thetaAdv, advOptimParams)     
-      advLosses[#advLosses + 1] = loss[1]
-    end
   end
 
   -- Plot training curve(s)
