@@ -61,17 +61,18 @@ local feval = function(params)
   -- Backpropagation
   local gradLoss = criterion:backward(xHat, x)
   autoencoder:backward(x, gradLoss)
+  print(x:size())
 
   return loss, gradTheta
 end
 
-local advFeval = function(params)
-  if thetaAdv ~= params then
-    thetaAdv:copy(params)
-  end
+-- local advFeval = function(params)
+--   if thetaAdv ~= params then
+--     thetaAdv:copy(params)
+--   end
 
-  return advLoss, gradThetaAdv
-end
+--   return advLoss, gradThetaAdv
+-- end
 
 -- Train
 print('Training')
