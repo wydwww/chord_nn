@@ -4,7 +4,7 @@ local nn = require 'nn'
 
 -- params
 inputSize = 4000
-outputSize = 11
+outputSize = 8
 featureSize = 4000
 
 -- Create encoder

@@ -7,8 +7,8 @@ dofile 'real_data.lua'
 print('Setting up')
 torch.setdefaulttensortype('torch.FloatTensor')
 torch.manualSeed(1)
-local XTrain = trainData.data:float():div(255)
-local XTest = testData.data:float():div(255)
+local XTrain = trainData.data:float()--:div(255)
+local XTest = testData.data:float()--:div(255)
 -- print(trainData.labels)
 -- print(trainData.size)
 trSize = 1540
@@ -43,7 +43,7 @@ local theta, gradTheta = autoencoder:getParameters()
 local thetaAdv, gradThetaAdv
 
 -- Create loss
-local criterion = nn.BCECriterion()
+local criterion = nn.DistKLDivCriterion()
 
 -- Create optimiser function evaluation
 local x -- Minibatch
@@ -61,7 +61,7 @@ local feval = function(params)
   -- Backpropagation
   local gradLoss = criterion:backward(xHat, x)
   autoencoder:backward(x, gradLoss)
-  print(x:size())
+  -- print(x:size())
 
   return loss, gradTheta
 end
@@ -106,11 +106,24 @@ end
 
 -- Test
 print('Testing')
-x = XTest:narrow(1, 1, 10)
+x = XTest:narrow(1, 200, 1)
 local xHat
 
 autoencoder:evaluate()
 xHat = autoencoder:forward(x)
-
+print(x:size())
+print(xHat:size())
+-- print(x)
 -- Plot reconstructions
-image.save('Reconstructions.png', torch.cat(image.toDisplayTensor(x, 2, 10), image.toDisplayTensor(xHat, 2, 10), 1))
+-- image.save('Reconstructions.png', torch.cat(image.toDisplayTensor(x, 2, 10), image.toDisplayTensor(xHat, 2, 10), 1))
+image.save('Reconstructions.png', image.toDisplayTensor(x))
+
+
+-- Plot training curve(s)
+local plotresult = {{'result', torch.linspace(1, 4000, 4000), x:resize(4000), '-'}}
+
+gnuplot.pngfigure('result4.png')
+gnuplot.plot(table.unpack(plotresult))
+gnuplot.ylabel('value')
+gnuplot.xlabel('frequency #')
+gnuplot.plotflush()
